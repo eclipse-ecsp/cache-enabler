@@ -92,7 +92,7 @@
         <spring.test.version>6.1.14</spring.test.version>
         <checkstyle.version>10.13.0</checkstyle.version>
         <maven.checkstyle.version>3.3.1</maven.checkstyle.version>
-        <checkstyle.config.location>${project.basedir}/harman_checks.xml</checkstyle.config.location>
+        <checkstyle.config.location>${project.basedir}/checkstyle.xml</checkstyle.config.location>
         <sonar.java.checkstyle.reportPaths>${project.build.directory}/checkstyle-result.xml
         </sonar.java.checkstyle.reportPaths>
 		<license-tool-plugin.version>1.1.0</license-tool-plugin.version>
