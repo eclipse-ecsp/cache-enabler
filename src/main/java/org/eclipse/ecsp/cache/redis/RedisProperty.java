@@ -158,4 +158,16 @@ public abstract class RedisProperty {
     
     /** The Constant REDIS_CHECK_SLOTS_COVERAGE. */
     public static final String REDIS_CHECK_SLOTS_COVERAGE = "redis.check.slots.coverage";
+    
+    public static final String OLD_PACKAGE_NAME_ENTITIES = "com.harman.ignite.entities";
+    
+    public static final String NEW_PACKAGE_NAME_ENTITIES = "org.eclipse.ecsp.entities";
+    
+    public static final String IGNITE_STRING_KEY_OLD = "com.harman.ignite.key.IgniteStringKey";
+    
+    public static final String IGNITE_STRING_KEY_NEW = "org.eclipse.ecsp.key.IgniteStringKey";
+    
+    public static final String CONCURRECT_HASH_SET_OLD = "com.harman.ignite.utils.ConcurrentHashSet";
+    
+    public static final String CONCURRECT_HASH_SET_NEW = "org.eclipse.ecsp.utils.ConcurrentHashSet";
 }
