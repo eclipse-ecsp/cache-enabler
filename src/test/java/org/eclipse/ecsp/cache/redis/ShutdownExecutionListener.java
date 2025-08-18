@@ -36,8 +36,8 @@
 
 package org.eclipse.ecsp.cache.redis;
 
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.redisson.api.RedissonClient;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;

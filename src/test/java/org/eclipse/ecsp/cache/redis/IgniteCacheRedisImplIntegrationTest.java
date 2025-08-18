@@ -36,6 +36,9 @@
 
 package org.eclipse.ecsp.cache.redis;
 
+import com.harman.ignite.domain.Version;
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.eclipse.ecsp.cache.AddScoredEntityRequest;
 import org.eclipse.ecsp.cache.AddScoredStringRequest;
 import org.eclipse.ecsp.cache.DeleteEntryRequest;
@@ -48,12 +51,6 @@ import org.eclipse.ecsp.cache.IgniteCache;
 import org.eclipse.ecsp.cache.PutEntityRequest;
 import org.eclipse.ecsp.cache.PutMapOfEntitiesRequest;
 import org.eclipse.ecsp.cache.PutStringRequest;
-import org.eclipse.ecsp.cache.redis.IgniteCacheRedisImpl;
-import org.eclipse.ecsp.cache.redis.RedisConfig;
-import org.eclipse.ecsp.domain.Version;
-import org.eclipse.ecsp.entities.IgniteEntity;
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -103,7 +100,8 @@ import static org.eclipse.ecsp.cache.redis.RedisConstants.TWO_HUNDRED;
 public class IgniteCacheRedisImplIntegrationTest {
 
     /** The Constant LOGGER. */
-    private static final IgniteLogger LOGGER = IgniteLoggerFactory.getLogger(IgniteCacheRedisImplIntegrationTest.class);
+    private static final IgniteLogger LOGGER
+        = IgniteLoggerFactory.getLogger(IgniteCacheRedisImplIntegrationTest.class);
 
     /** The redis. */
     @ClassRule
@@ -147,7 +145,7 @@ public class IgniteCacheRedisImplIntegrationTest {
         igniteCache.delete(new DeleteEntryRequest().withKey("hello"));
         Assert.assertNull(igniteCache.getString("hello"));
     }
-    
+
     /**
      * Test delete entryrequest with namespace enabled.
      */
@@ -335,7 +333,8 @@ public class IgniteCacheRedisImplIntegrationTest {
      * @throws ExecutionException the execution exception
      */
     @Test
-    public void testAddScoredSortedEntityBatchedWithNamespaceEnabled() throws InterruptedException, ExecutionException {
+    public void testAddScoredSortedEntityBatchedWithNamespaceEnabled()
+        throws InterruptedException, ExecutionException {
         ((IgniteCacheRedisImpl) igniteCache).setBatchSize((int) FIVE.getValue());
         List<Future<String>> futures = new ArrayList<>();
         // test 2 batches at least
@@ -399,7 +398,7 @@ public class IgniteCacheRedisImplIntegrationTest {
         igniteCache.putEntity(req1);
         igniteCache.putEntity(req2);
         igniteCache.putEntity(req3);
-        Map<String, IgniteEntity> kv;
+        Map<String, IgniteCacheIntegTestEntity> kv;
         kv = igniteCache.getKeyValuePairsForRegex("TESTKEY*", Optional.of(Boolean.TRUE));
         Assert.assertEquals(TWO.getValue(), kv.size());
         Assert.assertTrue(kv.containsKey("namespace:TESTKEY1"));
@@ -443,7 +442,7 @@ public class IgniteCacheRedisImplIntegrationTest {
         igniteCache.putEntity(req1);
         igniteCache.putEntity(req2);
         igniteCache.putEntity(req3);
-        Map<String, IgniteEntity> kv = null;
+        Map<String, IgniteCacheIntegTestEntity> kv = null;
         kv = igniteCache.getKeyValuePairsForRegex("TESTKEY*", Optional.of(Boolean.FALSE));
         Assert.assertEquals(TWO.getValue(), kv.size());
         Assert.assertTrue(kv.containsKey("TESTKEY1"));
@@ -477,7 +476,7 @@ public class IgniteCacheRedisImplIntegrationTest {
         igniteCache.putEntity(req1);
         igniteCache.putEntity(req2);
         igniteCache.putEntity(req3);
-        Map<String, IgniteEntity> kv = null;
+        Map<String, IgniteCacheIntegTestEntity> kv = null;
         kv = igniteCache.getKeyValuePairsForRegex("INCORRECT*", Optional.of(Boolean.TRUE));
         Assert.assertEquals(0, kv.size());
     }
@@ -495,7 +494,7 @@ public class IgniteCacheRedisImplIntegrationTest {
         req2.withKey("TESTKEY2").withValue(value2).withNamespaceEnabled(false);
         igniteCache.putEntity(req1);
         igniteCache.putEntity(req2);
-        Map<String, IgniteEntity> kv = null;
+        Map<String, IgniteCacheIntegTestEntity> kv = null;
         kv = igniteCache.getKeyValuePairsForRegex("TESTKEY2", Optional.of(Boolean.FALSE));
         Assert.assertEquals(1, kv.size());
     }
@@ -712,7 +711,8 @@ public class IgniteCacheRedisImplIntegrationTest {
      * @throws ExecutionException the execution exception
      */
     @Test
-    public void testAddScoredSortedEntityBatchedWithNullMutationId() throws InterruptedException, ExecutionException {
+    public void testAddScoredSortedEntityBatchedWithNullMutationId()
+        throws InterruptedException, ExecutionException {
         ((IgniteCacheRedisImpl) igniteCache).setBatchSize(FIVE.getValue());
         List<Future<String>> futures = new ArrayList<>();
         // test 2 batches at least
@@ -822,14 +822,14 @@ public class IgniteCacheRedisImplIntegrationTest {
     /**
      * Test for addStringToScoredSortedSetAsync with namespace enabled.
      */
-    public static class IgniteCacheIntegTestEntity implements IgniteEntity, Comparable<IgniteCacheIntegTestEntity> {
+    public static class IgniteCacheIntegTestEntity implements Comparable<IgniteCacheIntegTestEntity> {
 
         /** The id. */
         private String id;
-        
+
         /** The value. */
         private String value;
-        
+
         /** The order. */
         private int order;
 
@@ -863,7 +863,6 @@ public class IgniteCacheRedisImplIntegrationTest {
          *
          * @return the schema version
          */
-        @Override
         public Version getSchemaVersion() {
             return schemaVersion;
         }
@@ -873,7 +872,6 @@ public class IgniteCacheRedisImplIntegrationTest {
          *
          * @param arg0 the new schema version
          */
-        @Override
         public void setSchemaVersion(Version arg0) {
             this.schemaVersion = arg0;
         }

@@ -36,9 +36,9 @@
 
 package org.eclipse.ecsp.cache.redis;
 
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.eclipse.ecsp.cache.exception.IgniteCacheException;
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;

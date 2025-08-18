@@ -36,8 +36,8 @@
 
 package redis.embedded;
 
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 
 import java.io.IOException;
 import java.util.List;

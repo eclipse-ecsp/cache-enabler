@@ -1,0 +1,8 @@
+log:
+    appender:
+        format: JSON
+    mask:
+        mode: partial-and-full
+        partial-masking-min-visible: 4
+        partial-masking-regex: "(?i)(vin\\s*[=:]\\s*['\"]?)([A-Za-z0-9]+)"
+        full-masking-regex: "(?i)(password|pwd|pass|token|email|key)\\s*[=:]\\s*['\"]?([^'\"\\s]+)"

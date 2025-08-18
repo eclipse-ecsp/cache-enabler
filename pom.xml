@@ -85,7 +85,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
-        <transformers.version>1.0.0</transformers.version>
+        <ignite.utils.version>1.0.0</ignite.utils.version>
         <maven.surefire.version>2.18.1</maven.surefire.version>
         <docker.java.version>3.3.6</docker.java.version>
         <testcontainers.version>1.17.6</testcontainers.version>
@@ -109,6 +109,8 @@
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec
         </jacoco.ut.execution.data.file>
         <commons.io.version>2.11.0</commons.io.version>
+        <springframework.boot.version>3.5.4</springframework.boot.version>
+        <platform.common.log.version>0.0.1.39</platform.common.log.version>
     </properties>
 
     <distributionManagement>
@@ -133,10 +135,25 @@
     </pluginRepositories>
 
     <dependencies>
+        <!-- <dependency>
+            <groupId>com.harman.platform.common</groupId>
+            <artifactId>common-libs</artifactId>
+            <version>${platform.common.log.version}</version>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.ecsp</groupId>
-            <artifactId>transformers</artifactId>
-            <version>${transformers.version}</version>
+            <artifactId>utils</artifactId>
+            <version>${ignite.utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${springframework.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${springframework.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>

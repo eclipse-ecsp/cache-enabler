@@ -36,6 +36,8 @@
 
 package org.eclipse.ecsp.cache.redis;
 
+import com.harman.ignite.domain.Version;
+import dev.morphia.annotations.Entity;
 import org.eclipse.ecsp.cache.AddScoredEntityRequest;
 import org.eclipse.ecsp.cache.AddScoredStringRequest;
 import org.eclipse.ecsp.cache.DeleteEntryRequest;
@@ -48,9 +50,6 @@ import org.eclipse.ecsp.cache.GetStringRequest;
 import org.eclipse.ecsp.cache.PutEntityRequest;
 import org.eclipse.ecsp.cache.PutMapOfEntitiesRequest;
 import org.eclipse.ecsp.cache.PutStringRequest;
-import org.eclipse.ecsp.cache.redis.IgniteCacheRedisImpl;
-import org.eclipse.ecsp.domain.Version;
-import org.eclipse.ecsp.entities.IgniteEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -74,6 +73,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.eclipse.ecsp.cache.redis.RedisConstants.FIVE;
 
+
 /**
  * Unit test class for IgniteCacheRedisImpl.
  */
@@ -81,7 +81,7 @@ public class IgniteCacheRedisImplUnitTest {
 
     /** The Constant THOUSAND_LONG. */
     private static final long THOUSAND_LONG = 1000L;
-    
+
     /** The Constant TWO_DOUBLE. */
     private static final double TWO_DOUBLE = 2.0D;
 
@@ -131,7 +131,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test delete entry async request with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testDeleteEntryAsyncRequestWithNamespaceDisabled() throws InterruptedException, ExecutionException {
@@ -243,11 +243,11 @@ public class IgniteCacheRedisImplUnitTest {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         RedissonClient redisson = Mockito.mock(RedissonClient.class);
         RBucket<Object> rbucket = (RBucket<Object>) Mockito.mock(RBucket.class);
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         Mockito.when(rbucket.get()).thenReturn(entity);
         Mockito.when(redisson.getBucket("hello")).thenReturn(rbucket);
         redisCache.setRedissonClient(redisson);
-        IgniteCacheTestEntity entityRead = redisCache.getEntity("hello");
+        IgniteCacheIgniteCacheTestEntity entityRead = redisCache.getEntity("hello");
         Assert.assertEquals(entity, entityRead);
         Mockito.verify(rbucket).get();
     }
@@ -260,11 +260,11 @@ public class IgniteCacheRedisImplUnitTest {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         RedissonClient redisson = Mockito.mock(RedissonClient.class);
         RBucket<Object> rbucket = (RBucket<Object>) Mockito.mock(RBucket.class);
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         Mockito.when(rbucket.get()).thenReturn(entity);
         Mockito.when(redisson.getBucket("hello")).thenReturn(rbucket);
         redisCache.setRedissonClient(redisson);
-        IgniteCacheTestEntity entityRead = redisCache.getEntity(
+        IgniteCacheIgniteCacheTestEntity entityRead = redisCache.getEntity(
                 new GetEntityRequest()
                         .withKey("hello")
                         .withNamespaceEnabled(false));
@@ -290,8 +290,9 @@ public class IgniteCacheRedisImplUnitTest {
         RBucket<Object> rbucket = (RBucket<Object>) Mockito.mock(RBucket.class);
         Mockito.when(redisson.getBucket("hello")).thenReturn(rbucket);
         redisCache.setRedissonClient(redisson);
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<IgniteCacheTestEntity>();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req
+            = new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>();
         req.withKey("hello").withValue(entity).withNamespaceEnabled(false);
         redisCache.putEntity(req);
         Mockito.verify(rbucket).set(entity);
@@ -303,7 +304,7 @@ public class IgniteCacheRedisImplUnitTest {
     @Test(expected = NullPointerException.class)
     public void testPutEntityWithNullKeyValueWithNamespaceDisabled() {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        redisCache.putEntity(new PutEntityRequest<IgniteCacheTestEntity>());
+        redisCache.putEntity(new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>());
     }
 
     /**
@@ -316,8 +317,9 @@ public class IgniteCacheRedisImplUnitTest {
         RBucket<Object> rbucket = (RBucket<Object>) Mockito.mock(RBucket.class);
         Mockito.when(redisson.getBucket("hello")).thenReturn(rbucket);
         redisCache.setRedissonClient(redisson);
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<IgniteCacheTestEntity>();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req
+            = new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>();
         req.withKey("hello").withValue(entity).withNamespaceEnabled(false);
         req.withTtlMs(THOUSAND_LONG);
         redisCache.putEntity(req);
@@ -334,9 +336,10 @@ public class IgniteCacheRedisImplUnitTest {
         RBucket<Object> rbucket = (RBucket<Object>) Mockito.mock(RBucket.class);
         Mockito.when(redisson.getBucket("hello")).thenReturn(rbucket);
         redisCache.setRedissonClient(redisson);
-        IgniteCacheTestEntity newEntity = new IgniteCacheTestEntity();
-        IgniteCacheTestEntity oldEntity = new IgniteCacheTestEntity();
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<IgniteCacheTestEntity>();
+        IgniteCacheIgniteCacheTestEntity newEntity = new IgniteCacheIgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity oldEntity = new IgniteCacheIgniteCacheTestEntity();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req
+            = new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>();
         req.withKey("hello").withValue(newEntity).withNamespaceEnabled(false);
         req.ifCurrentMatches(oldEntity);
         redisCache.putEntity(req);
@@ -384,7 +387,8 @@ public class IgniteCacheRedisImplUnitTest {
     }
 
     /**
-     * Test add string to scored sorted set with null key value with namespace disabled.
+     * Test add string to scored sorted set with null key value with namespace
+     * disabled.
      */
     @Test(expected = NullPointerException.class)
     public void testAddStringToScoredSortedSetWithNullKeyValueWithNamespaceDisabled() {
@@ -422,7 +426,8 @@ public class IgniteCacheRedisImplUnitTest {
     }
 
     /**
-     * Test get strings from scored sorted set with null key with namespace disabled.
+     * Test get strings from scored sorted set with null key with namespace
+     * disabled.
      */
     @Test(expected = NullPointerException.class)
     public void testGetStringsFromScoredSortedSetWithNullKeyWithNamespaceDisabled() {
@@ -472,10 +477,12 @@ public class IgniteCacheRedisImplUnitTest {
         RScoredSortedSet<Object> rsss = (RScoredSortedSet<Object>) Mockito.mock(RScoredSortedSet.class);
         Mockito.when(redisson.getScoredSortedSet("entities")).thenReturn(rsss);
         redisCache.setRedissonClient(redisson);
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         redisCache.addEntityToScoredSortedSet(
-                new AddScoredEntityRequest<IgniteCacheTestEntity>().withKey("entities").withScore(1D).withValue(entity)
-                        .withNamespaceEnabled(false));
+                new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
+                .withKey("entities")
+                .withScore(1D).withValue(entity)
+                .withNamespaceEnabled(false));
         Mockito.verify(rsss).add(1D, entity);
     }
 
@@ -485,9 +492,9 @@ public class IgniteCacheRedisImplUnitTest {
     @Test(expected = NullPointerException.class)
     public void testAddEntityToScoredSortedSetWithNullKeyWithNamespaceDisabled() {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         redisCache.addEntityToScoredSortedSet(
-                new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                         .withScore(1D)
                         .withValue(entity)
                         .withNamespaceEnabled(false));
@@ -500,20 +507,21 @@ public class IgniteCacheRedisImplUnitTest {
     public void testAddEntityToScoredSortedSetWithNullValueWithNamespaceDisabled() {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.addEntityToScoredSortedSet(
-                new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                         .withKey("entities")
                         .withScore(1D)
                         .withNamespaceEnabled(false));
     }
 
     /**
-     * Test add entity to scored sorted set with null key value with namespace disabled.
+     * Test add entity to scored sorted set with null key value with namespace
+     * disabled.
      */
     @Test(expected = NullPointerException.class)
     public void testAddEntityToScoredSortedSetWithNullKeyValueWithNamespaceDisabled() {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.addEntityToScoredSortedSet(
-                new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                         .withScore(1D)
                         .withNamespaceEnabled(false));
     }
@@ -527,16 +535,16 @@ public class IgniteCacheRedisImplUnitTest {
         RScoredSortedSet<Object> rsss = (RScoredSortedSet<Object>) Mockito.mock(RScoredSortedSet.class);
         Mockito.when(redisson.getScoredSortedSet("entities")).thenReturn(rsss);
         List<ScoredEntry<Object>> entities = new ArrayList<>();
-        IgniteEntity entity1 = new IgniteCacheTestEntity();
-        IgniteEntity entity2 = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity1 = new IgniteCacheIgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity2 = new IgniteCacheIgniteCacheTestEntity();
         entities.add(new ScoredEntry<Object>(1D, entity1));
         entities.add(new ScoredEntry<Object>(TWO_DOUBLE, entity2));
         Mockito.when(rsss.entryRange(1, FIVE.getValue())).thenReturn(entities);
-        List<IgniteEntity> expectedEntities = Arrays.asList(entity1, entity2);
+        List<IgniteCacheIgniteCacheTestEntity> expectedEntities = Arrays.asList(entity1, entity2);
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.setRedissonClient(redisson);
 
-        List<IgniteCacheTestEntity> actualEntities = redisCache
+        List<IgniteCacheIgniteCacheTestEntity> actualEntities = redisCache
                 .getEntitiesFromScoredSortedSet(
                         new GetScoredEntitiesRequest()
                                 .withKey("entities")
@@ -548,7 +556,8 @@ public class IgniteCacheRedisImplUnitTest {
     }
 
     /**
-     * Test get entities from scored sorted set with null key with namespace disabled.
+     * Test get entities from scored sorted set with null key with namespace
+     * disabled.
      */
     @Test(expected = NullPointerException.class)
     public void testGetEntitiesFromScoredSortedSetWithNullKeyWithNamespaceDisabled() {
@@ -571,16 +580,16 @@ public class IgniteCacheRedisImplUnitTest {
         RScoredSortedSet<Object> rsss = (RScoredSortedSet<Object>) Mockito.mock(RScoredSortedSet.class);
         Mockito.when(redisson.getScoredSortedSet("entities")).thenReturn(rsss);
         List<ScoredEntry<Object>> entities = new ArrayList<>();
-        IgniteEntity entity1 = new IgniteCacheTestEntity();
-        IgniteEntity entity2 = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity1 = new IgniteCacheIgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity2 = new IgniteCacheIgniteCacheTestEntity();
         entities.add(new ScoredEntry<Object>(1D, entity2));
         entities.add(new ScoredEntry<Object>(TWO_DOUBLE, entity1));
         Mockito.when(rsss.entryRangeReversed(1, FIVE.getValue())).thenReturn(entities);
-        List<IgniteEntity> expectedEntities = Arrays.asList(entity2, entity1);
+        List<IgniteCacheIgniteCacheTestEntity> expectedEntities = Arrays.asList(entity2, entity1);
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.setRedissonClient(redisson);
 
-        List<IgniteCacheTestEntity> actualEntities = redisCache.getEntitiesFromScoredSortedSet(
+        List<IgniteCacheIgniteCacheTestEntity> actualEntities = redisCache.getEntitiesFromScoredSortedSet(
                 new GetScoredEntitiesRequest().withKey("entities")
                         .withStartIndex(1)
                         .withEndIndex(FIVE.getValue())
@@ -594,7 +603,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put string key value async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutStringKeyValueAsyncWithNamespaceDisabled() throws InterruptedException, ExecutionException {
@@ -619,12 +628,11 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put string key value async with null key with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test(expected = NullPointerException.class)
     public void testPutStringKeyValueAsyncWithNullKeyWithNamespaceDisabled()
-            throws
-            InterruptedException, ExecutionException {
+            throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         Future<String> ret = redisCache.putStringAsync(
                 new PutStringRequest()
@@ -637,7 +645,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put string key value async with null value with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test(expected = NullPointerException.class)
     public void testPutStringKeyValueAsyncWithNullValueWithNamespaceDisabled()
@@ -651,10 +659,11 @@ public class IgniteCacheRedisImplUnitTest {
     }
 
     /**
-     * Test put string key value async with null mutation id with namespace disabled.
+     * Test put string key value async with null mutation id with namespace
+     * disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutStringKeyValueAsyncWithNullMutationIdWithNamespaceDisabled()
@@ -680,7 +689,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put string key value with ttl async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutStringKeyValueWithTtlAsyncWithNamespaceDisabled()
@@ -708,7 +717,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put string key value if async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutStringKeyValueIfAsyncWithNamespaceDisabled()
@@ -734,19 +743,19 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put entity async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutEntityAsyncWithNamespaceDisabled()
             throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         RBatch rbatch = Mockito.mock(RBatch.class);
         redisCache.setRBatch(rbatch);
         RBucketAsync<Object> rbucket = (RBucketAsync<Object>) Mockito.mock(RBucketAsync.class);
         Mockito.when(rbatch.getBucket("hello")).thenReturn(rbucket);
         Mockito.when(rbucket.setAsync(entity)).thenReturn(new CompletableFutureWrapper<Void>((Void) null));
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<>();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req = new PutEntityRequest<>();
         req.withKey("hello").withValue(entity).withMutationId("mut001").withNamespaceEnabled(false);
         Future<String> ret = redisCache.putEntityAsync(req);
         Assert.assertTrue(ret.isDone());
@@ -758,14 +767,15 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put entity async with null key with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test(expected = NullPointerException.class)
     public void testPutEntityAsyncWithNullKeyWithNamespaceDisabled()
             throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<IgniteCacheTestEntity>();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req
+            = new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>();
         req.withValue(entity).withMutationId("mut001").withNamespaceEnabled(false);
         redisCache.putEntityAsync(req);
     }
@@ -774,14 +784,16 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put entity async with null value with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test(expected = NullPointerException.class)
     public void testPutEntityAsyncWithNullValueWithNamespaceDisabled()
             throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<IgniteCacheTestEntity>();
-        req.withKey("hello").withMutationId("mut001").withNamespaceEnabled(false);
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req
+            = new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>();
+        req.withKey("hello").withMutationId("mut001")
+            .withNamespaceEnabled(false);
         redisCache.putEntityAsync(req);
     }
 
@@ -789,26 +801,26 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put entity async with null key value with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test(expected = NullPointerException.class)
     public void testPutEntityAsyncWithNullKeyValueWithNamespaceDisabled()
             throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache
-                .putEntityAsync(new PutEntityRequest<IgniteCacheTestEntity>());
+                .putEntityAsync(new PutEntityRequest<IgniteCacheIgniteCacheTestEntity>());
     }
 
     /**
      * Test put entity with ttl async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutEntityWithTtlAsyncWithNamespaceDisabled() throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         RBatch rbatch = Mockito.mock(RBatch.class);
         redisCache.setRBatch(rbatch);
         RBucketAsync<Object> rbucket = (RBucketAsync<Object>) Mockito.mock(RBucketAsync.class);
@@ -816,7 +828,7 @@ public class IgniteCacheRedisImplUnitTest {
         Mockito.when(
                 rbucket.setAsync(entity, THOUSAND_LONG, TimeUnit.MILLISECONDS))
                 .thenReturn(new CompletableFutureWrapper<Void>((Void) null));
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<>();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req = new PutEntityRequest<>();
         req.withKey("hello").withValue(entity).withMutationId("mut001").withNamespaceEnabled(false);
         req.withTtlMs(THOUSAND_LONG);
         Future<String> ret = redisCache.putEntityAsync(req);
@@ -829,14 +841,14 @@ public class IgniteCacheRedisImplUnitTest {
      * Test put entity if async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testPutEntityIfAsyncWithNamespaceDisabled()
             throws InterruptedException, ExecutionException {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        IgniteCacheTestEntity newEntity = new IgniteCacheTestEntity();
-        IgniteCacheTestEntity oldEntity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity newEntity = new IgniteCacheIgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity oldEntity = new IgniteCacheIgniteCacheTestEntity();
         RBatch rbatch = Mockito.mock(RBatch.class);
         redisCache.setRBatch(rbatch);
         RBucketAsync<Object> rbucket = (RBucketAsync<Object>) Mockito.mock(RBucketAsync.class);
@@ -844,7 +856,7 @@ public class IgniteCacheRedisImplUnitTest {
         Mockito.when(
                 rbucket.compareAndSetAsync(oldEntity, newEntity))
                 .thenReturn(new CompletableFutureWrapper(true));
-        PutEntityRequest<IgniteCacheTestEntity> req = new PutEntityRequest<>();
+        PutEntityRequest<IgniteCacheIgniteCacheTestEntity> req = new PutEntityRequest<>();
         req.withKey("hello").withValue(newEntity).withMutationId("mut001").withNamespaceEnabled(false);
         req.ifCurrentMatches(oldEntity);
         Future<String> ret = redisCache
@@ -858,7 +870,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test add string to scored sorted set async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testAddStringToScoredSortedSetAsyncWithNamespaceDisabled()
@@ -885,7 +897,7 @@ public class IgniteCacheRedisImplUnitTest {
      * Test add entity to scored sorted set async with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testAddEntityToScoredSortedSetAsyncWithNamespaceDisabled()
@@ -897,10 +909,10 @@ public class IgniteCacheRedisImplUnitTest {
         RScoredSortedSetAsync<Object> rsss = (RScoredSortedSetAsync<Object>) Mockito.mock(RScoredSortedSetAsync.class);
         Mockito.when(rbatch.getScoredSortedSet("entities")).thenReturn(rsss);
         RFuture<Boolean> rfuture = (RFuture<Boolean>) Mockito.mock(RFuture.class);
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         Mockito.when(rsss.addAsync(1D, entity)).thenReturn(rfuture);
         Future<String> ret = redisCache.addEntityToScoredSortedSetAsync(
-                new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                         .withKey("entities")
                         .withScore(1D)
                         .withValue(entity)
@@ -914,11 +926,11 @@ public class IgniteCacheRedisImplUnitTest {
      * Test async completed exceptionally with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testAsyncCompletedExceptionallyWithNamespaceDisabled() throws InterruptedException, ExecutionException {
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.setBatchSize(FIVE.getValue());
         RBatch rbatch = Mockito.mock(RBatch.class);
@@ -927,7 +939,7 @@ public class IgniteCacheRedisImplUnitTest {
         Mockito.when(rsss.addAsync(1D, entity)).thenReturn(new CompletableFutureWrapper(false));
         redisCache.setRBatch(rbatch);
         Future<String> ret = redisCache.addEntityToScoredSortedSetAsync(
-                new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                         .withKey("entities")
                         .withScore(1D)
                         .withValue(entity)
@@ -949,14 +961,13 @@ public class IgniteCacheRedisImplUnitTest {
      * Test async batch already executed with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testAsyncBatchAlreadyExecutedWithNamespaceDisabled()
-            throws
-            InterruptedException,
+            throws InterruptedException,
             ExecutionException {
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.setBatchSize(FIVE.getValue());
         RBatch rbatch = Mockito.mock(RBatch.class);
@@ -967,7 +978,7 @@ public class IgniteCacheRedisImplUnitTest {
         redisCache.setRBatch(rbatch);
         try {
             Future<String> ret = redisCache.addEntityToScoredSortedSetAsync(
-                    new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                    new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                             .withKey("entities")
                             .withScore(1D)
                             .withValue(entity)
@@ -985,12 +996,12 @@ public class IgniteCacheRedisImplUnitTest {
      * Test async batch unexpected illegal state exception with namespace disabled.
      *
      * @throws InterruptedException the interrupted exception
-     * @throws ExecutionException the execution exception
+     * @throws ExecutionException   the execution exception
      */
     @Test
     public void testAsyncBatchUnexpectedIllegalStateExceptionWithNamespaceDisabled()
             throws InterruptedException, ExecutionException {
-        IgniteCacheTestEntity entity = new IgniteCacheTestEntity();
+        IgniteCacheIgniteCacheTestEntity entity = new IgniteCacheIgniteCacheTestEntity();
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
         redisCache.setBatchSize(FIVE.getValue());
         RBatch rbatch = Mockito.mock(RBatch.class);
@@ -1001,7 +1012,7 @@ public class IgniteCacheRedisImplUnitTest {
         redisCache.setRBatch(rbatch);
         try {
             Future<String> ret = redisCache.addEntityToScoredSortedSetAsync(
-                    new AddScoredEntityRequest<IgniteCacheTestEntity>()
+                    new AddScoredEntityRequest<IgniteCacheIgniteCacheTestEntity>()
                             .withKey("entities")
                             .withScore(1D)
                             .withValue(entity)
@@ -1059,7 +1070,7 @@ public class IgniteCacheRedisImplUnitTest {
     @Test(expected = NullPointerException.class)
     public void testPutMapWithNullKey() {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        redisCache.putMapOfEntities(new PutMapOfEntitiesRequest<IgniteCacheTestEntity>());
+        redisCache.putMapOfEntities(new PutMapOfEntitiesRequest<IgniteCacheIgniteCacheTestEntity>());
     }
 
     /**
@@ -1068,7 +1079,7 @@ public class IgniteCacheRedisImplUnitTest {
     @Test(expected = NullPointerException.class)
     public void testPutMapWithNullValueWithNamespaceDisabled() {
         IgniteCacheRedisImpl redisCache = new IgniteCacheRedisImpl();
-        PutMapOfEntitiesRequest req = new PutMapOfEntitiesRequest<IgniteCacheTestEntity>();
+        PutMapOfEntitiesRequest req = new PutMapOfEntitiesRequest<IgniteCacheIgniteCacheTestEntity>();
         req.withKey("abc").withNamespaceEnabled(false);
         redisCache.putMapOfEntities(req);
     }
@@ -1085,7 +1096,8 @@ public class IgniteCacheRedisImplUnitTest {
     /**
      * Test entity for testing.
      */
-    public class IgniteCacheTestEntity implements IgniteEntity {
+    @Entity
+    public class IgniteCacheIgniteCacheTestEntity {
 
         /** The schema version. */
         private Version schemaVersion;
@@ -1095,7 +1107,6 @@ public class IgniteCacheRedisImplUnitTest {
          *
          * @return the schema version
          */
-        @Override
         public Version getSchemaVersion() {
             return schemaVersion;
         }
@@ -1105,7 +1116,6 @@ public class IgniteCacheRedisImplUnitTest {
          *
          * @param arg0 the new schema version
          */
-        @Override
         public void setSchemaVersion(Version arg0) {
             this.schemaVersion = arg0;
         }

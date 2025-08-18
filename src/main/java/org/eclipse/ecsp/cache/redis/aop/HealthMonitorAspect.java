@@ -36,13 +36,13 @@
 
 package org.eclipse.ecsp.cache.redis.aop;
 
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.eclipse.ecsp.cache.redis.IgniteCacheRedisImpl;
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.redisson.client.RedisException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

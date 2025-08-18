@@ -17,16 +17,16 @@
 
 package org.eclipse.ecsp.cache.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.eclipse.ecsp.cache.PutStringRequest;
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.redisson.api.RedissonClient;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,12 +54,12 @@ public class RedissonClientCreationTest {
      */
     @Before
     public void setup() {
-
         LOGGER.info("Initializing redisson client...");
         Map<String, String> props = getPropertiesMap();
         RedisConfig redisConfig = new RedisConfig();
         igniteCacheRedisImpl = new IgniteCacheRedisImpl();
-        redissonClient = redisConfig.builder().build(props);
+        ObjectMapper objectMapper = new ObjectMapper();
+        redissonClient = redisConfig.builder().build(props, objectMapper);
         igniteCacheRedisImpl.setRedissonClient(redissonClient);
     }
 

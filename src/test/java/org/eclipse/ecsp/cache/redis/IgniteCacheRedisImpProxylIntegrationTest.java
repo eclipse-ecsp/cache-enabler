@@ -36,9 +36,10 @@
 
 package org.eclipse.ecsp.cache.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.eclipse.ecsp.cache.PutStringRequest;
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -85,7 +86,8 @@ public class IgniteCacheRedisImpProxylIntegrationTest {
         Map<String, String> props = getPropertiesMap();
         RedisConfig redisConfig = new RedisConfig();
         igniteCache = new IgniteCacheRedisImpl();
-        redissonClient = redisConfig.builder().build(props);
+        ObjectMapper objectMapper = new ObjectMapper();
+        redissonClient = redisConfig.builder().build(props, objectMapper);
         igniteCache.setRedissonClient(redissonClient);
     }
 

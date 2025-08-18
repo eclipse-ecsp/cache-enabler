@@ -39,10 +39,10 @@ package org.eclipse.ecsp.cache.redis;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.harman.ignite.utils.logger.IgniteLogger;
+import com.harman.ignite.utils.logger.IgniteLoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.ecsp.cache.exception.JacksonCodecException;
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.Codec;
@@ -52,7 +52,6 @@ import org.redisson.config.ReadMode;
 import org.redisson.config.SubscriptionMode;
 import org.redisson.config.TransportMode;
 import org.redisson.connection.balancer.RoundRobinLoadBalancer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -233,10 +232,6 @@ public class RedisConfig {
     @Value("${" + RedisProperty.REDIS_CHECK_SLOTS_COVERAGE + ":false}")
     private boolean checkSlotsCoverage;
 
-    /** The object mapper. */
-    @Autowired
-    private ObjectMapper objectMapper;
-
     /** The overriding port. */
     // support integration tests
     static Integer overridingPort;
@@ -253,8 +248,8 @@ public class RedisConfig {
      * @return the redisson client
      */
     @Bean
-    public RedissonClient redissonClient() {
-        return Redisson.create(getConfig());
+    public RedissonClient redissonClient(ObjectMapper objectMapper) {
+        return Redisson.create(getConfig(objectMapper));
     }
 
     /**
@@ -262,9 +257,9 @@ public class RedisConfig {
      *
      * @return the config
      */
-    private Config getConfig() {
+    private Config getConfig(ObjectMapper objectMapper) {
         Config config;
-        Codec codec = getCodec();
+        Codec codec = getCodec(objectMapper);
         if ((sentinels != null) && (sentinels.trim().length() > 0)) {
             config = getConfigIfSentinelsPresent(codec);
         } else if ((clusterMasters != null) && (clusterMasters.trim().length() > 0)) {
@@ -280,7 +275,7 @@ public class RedisConfig {
      *
      * @return the codec
      */
-    private Codec getCodec() {
+    private Codec getCodec(ObjectMapper objectMapper) {
         Codec codec;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -288,7 +283,7 @@ public class RedisConfig {
         if (StringUtils.isBlank(igniteCodecClass)) {
             codec = getDefaultCodec(mapper);
         } else {
-            codec = getCodecForCodecClass();
+            codec = getCodecForCodecClass(objectMapper);
         }
         return codec;
     }
@@ -309,7 +304,7 @@ public class RedisConfig {
      *
      * @return the codec for codec class
      */
-    private Codec getCodecForCodecClass() {
+    private Codec getCodecForCodecClass(ObjectMapper objectMapper) {
         try {
             // RTC-156940 - Redis issue when the component is not able
             // to send to device and we restart the component.
@@ -474,12 +469,13 @@ public class RedisConfig {
         /**
          * Builds a RedissonClient using the provided properties.
          *
-         * @param props the properties to configure the RedissonClient
+         * @param props        the properties to configure the RedissonClient
+         * @param objectMapper the ObjectMapper to use for serialization/deserialization
          * @return the configured RedissonClient
          */
-        public RedissonClient build(Map<String, String> props) {
+        public RedissonClient build(Map<String, String> props, ObjectMapper objectMapper) {
             setRedisConfig(props);
-            return redissonClient();
+            return redissonClient(objectMapper);
         }
 
         /**
