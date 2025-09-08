@@ -36,15 +36,13 @@
 
 package org.eclipse.ecsp.cache;
 
-import org.eclipse.ecsp.entities.IgniteEntity;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 
 /**
- * Base contract for cache in Ignite.
+ * Base contract for cache in Platform.
  * Support for optimized implementations that can perform batched updates through its .*Async() methods.
  * Clients of this interface are encouraged to use Async methods to improve throughput.
  * This may not be possible in all cases, for ex if the same value has to be read back immediately from Redis.
@@ -54,7 +52,6 @@ import java.util.concurrent.Future;
  * Operations support 2 data types:
  * <ul>
  * <li>String</li>
- * <li>IgniteEntity</li>
  * </ul>
  *
  * @author ssasidharan
@@ -94,37 +91,37 @@ public interface IgniteCache {
     /**
      * Retrieves an entity based on the provided request.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param getRequest the request containing the parameters for retrieving the entity
      * @return the entity based on the request
      */
-    <T extends IgniteEntity> T getEntity(GetEntityRequest getRequest);
+    <T> T getEntity(GetEntityRequest getRequest);
 
     /**
      * Retrieves an entity associated with the given key.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param key the key to retrieve the entity for
      * @return the entity associated with the key
      */
-    <T extends IgniteEntity> T getEntity(String key);
+    <T> T getEntity(String key);
 
     /**
      * Stores an entity based on the provided request.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param putRequest the request containing the parameters for storing the entity
      */
-    <T extends IgniteEntity> void putEntity(PutEntityRequest<T> putRequest);
+    <T> void putEntity(PutEntityRequest<T> putRequest);
 
     /**
      * Adds the put entity mutation operation to a batch and completes the future when the batch is committed.
      *
      * @param putRequest the put entity request
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @return future that returns the mutationId from the original request
      */
-    <T extends IgniteEntity> Future<String> putEntityAsync(PutEntityRequest<T> putRequest);
+    <T> Future<String> putEntityAsync(PutEntityRequest<T> putRequest);
 
     /**
      * Adds a string to a scored sorted set based on the provided request.
@@ -152,38 +149,38 @@ public interface IgniteCache {
     /**
      * Adds an entity to a scored sorted set based on the provided request.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param request the request containing the parameters for adding the entity to the scored sorted set
      */
-    <T extends IgniteEntity> void addEntityToScoredSortedSet(AddScoredEntityRequest<T> request);
+    <T> void addEntityToScoredSortedSet(AddScoredEntityRequest<T> request);
 
     /**
      * Adds the scored set entity append mutation to a batch and completes the future when the batch is committed.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param request the add scored entity request
      * @return future that returns the mutationId from the original request
      */
-    <T extends IgniteEntity> Future<String> addEntityToScoredSortedSetAsync(AddScoredEntityRequest<T> request);
+    <T> Future<String> addEntityToScoredSortedSetAsync(AddScoredEntityRequest<T> request);
 
     /**
      * Retrieves a list of entities from a scored sorted set based on the provided request.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param request the request containing the parameters for retrieving the entities
      * @return the list of entities from the scored sorted set
      */
-    <T extends IgniteEntity> List<T> getEntitiesFromScoredSortedSet(GetScoredEntitiesRequest request);
+    <T> List<T> getEntitiesFromScoredSortedSet(GetScoredEntitiesRequest request);
 
     /**
      * Retrieves a map of key-value pairs for entities matching the given key regex.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param keyRegex the regex pattern to match keys
      * @param namespaceEnabled optional flag to enable namespace
      * @return the map of key-value pairs for entities matching the key regex
      */
-    <T extends IgniteEntity> Map<String, T> getKeyValuePairsForRegex(String keyRegex,
+    <T> Map<String, T> getKeyValuePairsForRegex(String keyRegex,
             Optional<Boolean> namespaceEnabled);
 
     /**
@@ -211,19 +208,19 @@ public interface IgniteCache {
     /**
      * Stores a map of entities based on the provided request.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param request the request containing the parameters for storing the map of entities
      */
-    <T extends IgniteEntity> void putMapOfEntities(PutMapOfEntitiesRequest<T> request);
+    <T> void putMapOfEntities(PutMapOfEntitiesRequest<T> request);
 
     /**
      * Retrieves a map of entities based on the provided request.
      *
-     * @param <T> the type of the entity extending IgniteEntity
+     * @param <T> the type of the entity
      * @param request the request containing the parameters for retrieving the map of entities
      * @return the map of entities based on the request
      */
-    <T extends IgniteEntity> Map<String, T> getMapOfEntities(GetMapOfEntitiesRequest request);
+    <T> Map<String, T> getMapOfEntities(GetMapOfEntitiesRequest request);
 
     /**
      * Deletes a map of entities based on the provided request.

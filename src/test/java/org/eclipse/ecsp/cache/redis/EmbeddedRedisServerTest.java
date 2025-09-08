@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import static org.eclipse.ecsp.cache.redis.RedisConstants.TEN_THOUSAND;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
+
 /**
  * Test case for the {@link EmbeddedRedisServer} class.
  */
