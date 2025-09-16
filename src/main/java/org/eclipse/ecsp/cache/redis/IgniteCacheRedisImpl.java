@@ -59,7 +59,6 @@ import org.eclipse.ecsp.cache.exception.FileNotFoundException;
 import org.eclipse.ecsp.cache.exception.IgniteCacheException;
 import org.eclipse.ecsp.cache.exception.JacksonCodecException;
 import org.eclipse.ecsp.cache.exception.RedisBatchProcessingException;
-import org.eclipse.ecsp.entities.IgniteEntity;
 import org.eclipse.ecsp.healthcheck.HealthMonitor;
 import org.eclipse.ecsp.utils.logger.IgniteLogger;
 import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
@@ -107,9 +106,12 @@ import static org.eclipse.ecsp.cache.redis.RedisProperty.REDIS_KEY_NAMESPACE_DEL
 /**
  * Implementation of IgniteCache for Redis backend.<br>
  * Supports pipelined batch executions through its .*Async() methods.<br>
- * Clients of this class are encouraged to use Async methods to improve throughput.<br>
- * This may not be possible in all cases, for ex if the same value has to be read back immediately from Redis.<br>
- * But for typical store and forget or store and retrieve slightly later use cases,
+ * Clients of this class are encouraged to use Async methods to improve
+ * throughput.<br>
+ * This may not be possible in all cases, for ex if the same value has to be
+ * read back immediately from Redis.<br>
+ * But for typical store and forget or store and retrieve slightly later use
+ * cases,
  * Async methods will bring about quite a bit of throughput improvement.<br>
  * Operations support 2 data types:<br>
  * <ul>
@@ -121,36 +123,36 @@ import static org.eclipse.ecsp.cache.redis.RedisProperty.REDIS_KEY_NAMESPACE_DEL
  */
 @Repository
 public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
-    
+
     /** The Constant NUM_BATCH_RETRIES. */
     private static final int NUM_BATCH_RETRIES = 5;
-    
+
     /** The Constant MINUS_ONE_LONG. */
     public static final long MINUS_ONE_LONG = -1L;
-    
+
     /** The Constant REDIS_HEALTH_GUAGE. */
     public static final String REDIS_HEALTH_GUAGE = "REDIS_HEALTH_GUAGE";
-    
+
     /** The Constant REDIS_HEALTH_MONITOR. */
     public static final String REDIS_HEALTH_MONITOR = "REDIS_HEALTH_MONITOR";
-    
+
     /** The Constant LOGGER. */
     private static final IgniteLogger LOGGER = IgniteLoggerFactory.getLogger(IgniteCacheRedisImpl.class);
-    
+
     /** The scan limit. */
     @Value("${redis.scan.limit:100}")
     private int scanLimit;
-    
+
     /** The regex scan file name. */
     @Value("${redis.regex.scan.filename:scanregex.txt}")
     private String regexScanFileName;
-    
+
     /** The string codec. */
     private StringCodec stringCodec = new StringCodec();
-    
+
     /** The decoder. */
     private Decoder<Object> decoder;
-    
+
     /** The redisson client. */
     @Autowired
     private RedissonClient redissonClient;
@@ -160,15 +162,15 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     // parameter.
     @Value("${ignite.codec.class:}")
     private String igniteCodecClass;
-    
+
     /** The retry record id pattern. */
     @Value("${retry.record.id.pattern}")
     private String retryRecordIdPattern;
-    
+
     /** The object mapper. */
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     /** The scan regex script. */
     private String scanRegexScript;
     /**
@@ -185,20 +187,20 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /** The current batch. */
     // batchSize entries; there can be more but not less. That is ok.
     private volatile RBatch currentBatch = null;
-    
+
     /** The batch count. */
     /*
      * used for tracking the current size of the batch and to trigger execution
      * when size equals batch size
      */
     private AtomicInteger batchCount = new AtomicInteger(0);
-    
+
     /** The last batch exec timestamp. */
     private AtomicLong lastBatchExecTimestamp = new AtomicLong(System.currentTimeMillis());
 
     /** The Constant MANDATORY_VALUE. */
     public static final String MANDATORY_VALUE = "value is mandatory";
-    
+
     /** The Constant MANDATORY_KEY. */
     public static final String MANDATORY_KEY = "key is mandatory";
 
@@ -221,7 +223,7 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
      * Instantiates a new ignite cache redis impl.
      */
     public IgniteCacheRedisImpl() {
-        //default constructor
+        // default constructor
     }
 
     /**
@@ -279,7 +281,7 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
      * @return the entity associated with the key
      */
     @Override
-    public <T extends IgniteEntity> T getEntity(String key) {
+    public <T> T getEntity(String key) {
         key = addNamespace(key, true);
         RBucket<T> bucket = redissonClient.getBucket(key);
         return bucket.get();
@@ -288,12 +290,12 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Retrieves an entity from Redis based on the provided request.
      *
-     * @param <T> the type of the entity
+     * @param <T>     the type of the entity
      * @param request the request containing the key and namespace information
      * @return the entity associated with the key
      */
     @Override
-    public <T extends IgniteEntity> T getEntity(GetEntityRequest request) {
+    public <T> T getEntity(GetEntityRequest request) {
         request.withKey(addNamespace(request.getKey(), request.getNamespaceEnabled()));
         return (T) redissonClient.getBucket(request.getKey()).get();
     }
@@ -301,11 +303,11 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Stores an entity in Redis based on the provided request.
      *
-     * @param <T> the type of the entity
+     * @param <T>        the type of the entity
      * @param putRequest the request containing the key, value, and other parameters
      */
     @Override
-    public <T extends IgniteEntity> void putEntity(PutEntityRequest<T> putRequest) {
+    public <T> void putEntity(PutEntityRequest<T> putRequest) {
         validate(putRequest);
         putRequest.withKey(addNamespace(putRequest.getKey(), putRequest.getNamespaceEnabled()));
         RBucket<T> bucket = redissonClient.getBucket(putRequest.getKey());
@@ -358,11 +360,11 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Adds an entity to a scored sorted set in Redis.
      *
-     * @param <T> the type of the entity
+     * @param <T>     the type of the entity
      * @param request the request containing the key, value, and score
      */
     @Override
-    public <T extends IgniteEntity> void addEntityToScoredSortedSet(AddScoredEntityRequest<T> request) {
+    public <T> void addEntityToScoredSortedSet(AddScoredEntityRequest<T> request) {
         validate(request);
         request.withKey(addNamespace(request.getKey(), request.getNamespaceEnabled()));
         RScoredSortedSet<T> sset = redissonClient.getScoredSortedSet(request.getKey());
@@ -372,12 +374,12 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Gets the entities from scored sorted set.
      *
-     * @param <T> the generic type
+     * @param <T>     the generic type
      * @param request the request
      * @return the entities from scored sorted set
      */
     @Override
-    public <T extends IgniteEntity> List<T> getEntitiesFromScoredSortedSet(GetScoredEntitiesRequest request) {
+    public <T> List<T> getEntitiesFromScoredSortedSet(GetScoredEntitiesRequest request) {
         validate(request);
         request.withKey(addNamespace(request.getKey(), request.getNamespaceEnabled()));
         RScoredSortedSet<T> sset = redissonClient.getScoredSortedSet(request.getKey());
@@ -427,12 +429,12 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Asynchronously stores an entity in Redis based on the provided request.
      *
-     * @param <T> the type of the entity
+     * @param <T>        the type of the entity
      * @param putRequest the request containing the key, value, and other parameters
      * @return a Future representing the result of the asynchronous operation
      */
     @Override
-    public <T extends IgniteEntity> Future<String> putEntityAsync(PutEntityRequest<T> putRequest) {
+    public <T> Future<String> putEntityAsync(PutEntityRequest<T> putRequest) {
         validate(putRequest);
         putRequest.withKey(addNamespace(putRequest.getKey(), putRequest.getNamespaceEnabled()));
         CompletableFuture<String> f = new CompletableFuture<>();
@@ -478,12 +480,12 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Adds the entity to a scored sorted set asynchronously.
      *
-     * @param <T> the generic type of the entity
+     * @param <T>     the generic type of the entity
      * @param request the request containing the entity and its score
      * @return a Future representing the result of the asynchronous operation
      */
     @Override
-    public <T extends IgniteEntity> Future<String> addEntityToScoredSortedSetAsync(AddScoredEntityRequest<T> request) {
+    public <T> Future<String> addEntityToScoredSortedSetAsync(AddScoredEntityRequest<T> request) {
         validate(request);
         request.withKey(addNamespace(request.getKey(), request.getNamespaceEnabled()));
         CompletableFuture<String> f = new CompletableFuture<>();
@@ -511,7 +513,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Deletes the entry associated with the given key from Redis.
      *
-     * @param deleteRequest the delete request containing the key and namespace information
+     * @param deleteRequest the delete request containing the key and namespace
+     *                      information
      */
     @Override
     public void delete(DeleteEntryRequest deleteRequest) {
@@ -523,7 +526,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Asynchronously deletes the entry associated with the given key from Redis.
      *
-     * @param deleteRequest the delete request containing the key and namespace information
+     * @param deleteRequest the delete request containing the key and namespace
+     *                      information
      * @return a Future representing the result of the asynchronous operation
      */
     @Override
@@ -550,15 +554,16 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * This methods tries to scan redis keys with the regex provided and returns key value pairs.
+     * This methods tries to scan redis keys with the regex provided and returns key
+     * value pairs.
      *
-     * @param <T> the generic type
-     * @param keyRegex the key regex
+     * @param <T>              the generic type
+     * @param keyRegex         the key regex
      * @param namespaceEnabled the namespace enabled
      * @return the key value pairs for regex
      */
     @Override
-    public <T extends IgniteEntity> Map<String, T> getKeyValuePairsForRegex(
+    public <T> Map<String, T> getKeyValuePairsForRegex(
             String keyRegex, Optional<Boolean> namespaceEnabled) {
         Map<String, T> keyValuePairs = new HashMap<>();
         if ((namespaceEnabled.isPresent() && Boolean.TRUE.equals(namespaceEnabled.get()))
@@ -608,11 +613,11 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Stores a map of entities in Redis based on the provided request.
      *
-     * @param <T> the type of the entities
+     * @param <T>        the type of the entities
      * @param mapRequest the request containing the key, value, and other parameters
      */
     @Override
-    public <T extends IgniteEntity> void putMapOfEntities(PutMapOfEntitiesRequest<T> mapRequest) {
+    public <T> void putMapOfEntities(PutMapOfEntitiesRequest<T> mapRequest) {
         validate(mapRequest);
         mapRequest.withKey(addNamespace(mapRequest.getKey(), mapRequest.getNamespaceEnabled()));
         String key = mapRequest.getKey();
@@ -626,12 +631,12 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Retrieves a map of entities from Redis based on the provided request.
      *
-     * @param <T> the type of the entities
+     * @param <T>        the type of the entities
      * @param mapRequest the request containing the key and namespace information
      * @return the map of entities associated with the key
      */
     @Override
-    public <T extends IgniteEntity> Map<String, T> getMapOfEntities(GetMapOfEntitiesRequest mapRequest) {
+    public <T> Map<String, T> getMapOfEntities(GetMapOfEntitiesRequest mapRequest) {
         validate(mapRequest);
         mapRequest.withKey(addNamespace(mapRequest.getKey(), mapRequest.getNamespaceEnabled()));
         String key = mapRequest.getKey();
@@ -671,7 +676,7 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Adds the namespace.
      *
-     * @param key the key
+     * @param key              the key
      * @param namespaceEnabled the namespace enabled
      * @return the string
      */
@@ -687,13 +692,16 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
 
     /**
      * Executes the batch operation consumer in a reliable way. <br>
-     * If a thread was performing a batch operation and another thread performed RBatch.execute() at the same time,
-     * then first thread will fail with IllegalStateException("Batch already has been executed").
-     * This method performs a retry for such scenarios. Also advances the batch state.
+     * If a thread was performing a batch operation and another thread performed
+     * RBatch.execute() at the same time,
+     * then first thread will fail with IllegalStateException("Batch already has
+     * been executed").
+     * This method performs a retry for such scenarios. Also advances the batch
+     * state.
      *
      * @param c the batch operation consumer
      * @throws RuntimeException
-     *         if NUM_BATCH_RETRIES exhausted, and it still fails
+     *                          if NUM_BATCH_RETRIES exhausted, and it still fails
      */
     private void performBatchOperation(Consumer<Void> c) {
         for (int i = 1; i <= NUM_BATCH_RETRIES; i++) {
@@ -747,9 +755,9 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Completes the given CompletableFuture based on the success flag.
      *
-     * @param success     indicates if the operation was successful
-     * @param f           the CompletableFuture to complete
-     * @param mutationId  the mutation ID to complete the future with if successful
+     * @param success    indicates if the operation was successful
+     * @param f          the CompletableFuture to complete
+     * @param mutationId the mutation ID to complete the future with if successful
      */
     private void completeFuture(boolean success, CompletableFuture<String> f, final String mutationId) {
         if (success) {
@@ -782,7 +790,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
 
     /**
      * Initializes the `IgniteCacheRedisImpl` instance after construction.
-     * This method reads the scan regex script from the specified file and sets up the decoder.
+     * This method reads the scan regex script from the specified file and sets up
+     * the decoder.
      * It also starts the initial batch for Redis operations.
      *
      * @throws IgniteCacheException if there is an error reading the scan regex file
@@ -831,7 +840,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Starts a new batch for Redis operations.
      * This method initializes the `currentBatch` with a new instance of `RBatch`.
-     * It also resets the `batchCount` to 0 if it reaches the `batchSize` and updates the `lastBatchExecTimestamp`.
+     * It also resets the `batchCount` to 0 if it reaches the `batchSize` and
+     * updates the `lastBatchExecTimestamp`.
      */
     private void startBatch() {
         currentBatch = redissonClient.createBatch();
@@ -842,7 +852,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `PutMapOfEntitiesRequest` to ensure that the key and value are not null.
+     * Validates the `PutMapOfEntitiesRequest` to ensure that the key and value are
+     * not null.
      *
      * @param request the request containing the key and value to be validated
      * @throws NullPointerException if the key or value is null
@@ -865,7 +876,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `DeleteMapOfEntitiesRequest` to ensure that the key is not null.
+     * Validates the `DeleteMapOfEntitiesRequest` to ensure that the key is not
+     * null.
      *
      * @param request the request containing the key to be validated
      * @throws NullPointerException if the key is null
@@ -895,7 +907,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `AddScoredStringRequest` to ensure that the key and value are not null.
+     * Validates the `AddScoredStringRequest` to ensure that the key and value are
+     * not null.
      *
      * @param request the request containing the key and value to be validated
      * @throws NullPointerException if the key or value is null
@@ -916,7 +929,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `AddScoredEntityRequest` to ensure that the key and value are not null.
+     * Validates the `AddScoredEntityRequest` to ensure that the key and value are
+     * not null.
      *
      * @param request the request containing the key and value to be validated
      * @throws NullPointerException if the key or value is null
@@ -927,7 +941,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `GetScoredEntitiesRequest` to ensure that the key and value are not null.
+     * Validates the `GetScoredEntitiesRequest` to ensure that the key and value are
+     * not null.
      *
      * @param request the request containing the key and value to be validated
      * @throws NullPointerException if the key or value is null
@@ -937,7 +952,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `PutStringRequest` to ensure that the key and value are not null.
+     * Validates the `PutStringRequest` to ensure that the key and value are not
+     * null.
      *
      * @param request the request containing the key and value to be validated
      * @throws NullPointerException if the key or value is null
@@ -948,7 +964,8 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     }
 
     /**
-     * Validates the `PutEntityRequest` to ensure that the key and value are not null.
+     * Validates the `PutEntityRequest` to ensure that the key and value are not
+     * null.
      *
      * @param request the request containing the key and value to be validated
      * @throws NullPointerException if the key or value is null

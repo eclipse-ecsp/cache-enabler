@@ -46,7 +46,6 @@ import redis.embedded.RedisSentinel;
 import redis.embedded.RedisServer;
 import redis.embedded.util.Architecture;
 import redis.embedded.util.OS;
-
 import java.util.Arrays;
 
 /**
