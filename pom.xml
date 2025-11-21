@@ -86,7 +86,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
         <transformers.version>1.0.0</transformers.version>
-        <maven.surefire.version>2.18.1</maven.surefire.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
         <docker.java.version>3.3.6</docker.java.version>
         <testcontainers.version>1.17.6</testcontainers.version>
         <spring.test.version>6.1.14</spring.test.version>
