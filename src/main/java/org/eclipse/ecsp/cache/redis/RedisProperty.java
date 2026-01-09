@@ -129,9 +129,6 @@ public abstract class RedisProperty {
     /** The Constant REDIS_NETTY_THREADS. */
     public static final String REDIS_NETTY_THREADS = "redis.netty.threads";
     
-    /** The Constant REDIS_DECODE_IN_EXECUTOR. */
-    public static final String REDIS_DECODE_IN_EXECUTOR = "redis.decode.in.executor";
-    
     /** The Constant REDIS_EXECUTOR_THREADS. */
     public static final String REDIS_EXECUTOR_THREADS = "redis.executor.threads";
     
