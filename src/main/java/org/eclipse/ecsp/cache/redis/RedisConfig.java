@@ -365,7 +365,7 @@ public class RedisConfig {
                 .setRetryAttempts(retryAttempts)
                 .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setFailedSlaveReconnectionInterval(reconnectionTimeout)
-                .setFailedSlaveNodeDetector(new FailedConnectionDetector(reconnectionTimeout))
+                .setFailedSlaveNodeDetector(new FailedConnectionDetector(failedAttempts))
                 .setDatabase(database)
                 .setClientName(clientName)
                 .setPingConnectionInterval(pingConnectionInterval);
@@ -404,7 +404,7 @@ public class RedisConfig {
                 .setRetryAttempts(retryAttempts)
                 .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setFailedSlaveReconnectionInterval(reconnectionTimeout)
-                .setFailedSlaveNodeDetector(new FailedConnectionDetector(reconnectionTimeout))
+                .setFailedSlaveNodeDetector(new FailedConnectionDetector(failedAttempts))
                 .setClientName(clientName)
                 .setPingConnectionInterval(pingConnectionInterval)
                 .setSlaveConnectionMinimumIdleSize(slaveConnectionMinimumIdleSize)
