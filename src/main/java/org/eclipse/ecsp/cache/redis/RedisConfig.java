@@ -148,10 +148,6 @@ public class RedisConfig {
     @Value("${" + RedisProperty.REDIS_RECONNECTION_TIMEOUT + "}")
     private Integer reconnectionTimeout;
     
-    /** The failed attempts. */
-    @Value("${" + RedisProperty.REDIS_FAILED_ATTEMPTS + "}")
-    private Integer failedAttempts;
-    
     /** The database. */
     @Value("${" + RedisProperty.REDIS_DATABASE + "}")
     private Integer database;
@@ -231,6 +227,9 @@ public class RedisConfig {
     /** The check slots coverage. */
     @Value("${" + RedisProperty.REDIS_CHECK_SLOTS_COVERAGE + ":false}")
     private boolean checkSlotsCoverage;
+
+    @Value("${" + RedisProperty.REDIS_SLAVE_FAILS_INTERVAL + ":180000}")
+    private int slaveFailsInterval;
 
     /** The object mapper. */
     @Autowired
@@ -365,7 +364,7 @@ public class RedisConfig {
                 .setRetryAttempts(retryAttempts)
                 .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setFailedSlaveReconnectionInterval(reconnectionTimeout)
-                .setFailedSlaveNodeDetector(new FailedConnectionDetector(failedAttempts))
+                .setFailedSlaveNodeDetector(new FailedConnectionDetector(slaveFailsInterval))
                 .setDatabase(database)
                 .setClientName(clientName)
                 .setPingConnectionInterval(pingConnectionInterval);
@@ -404,7 +403,7 @@ public class RedisConfig {
                 .setRetryAttempts(retryAttempts)
                 .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setFailedSlaveReconnectionInterval(reconnectionTimeout)
-                .setFailedSlaveNodeDetector(new FailedConnectionDetector(failedAttempts))
+                .setFailedSlaveNodeDetector(new FailedConnectionDetector(slaveFailsInterval))
                 .setClientName(clientName)
                 .setPingConnectionInterval(pingConnectionInterval)
                 .setSlaveConnectionMinimumIdleSize(slaveConnectionMinimumIdleSize)
@@ -512,7 +511,7 @@ public class RedisConfig {
             retryAttempts = Integer.parseInt(props.get(RedisProperty.REDIS_RETRY_ATTEMPTS));
             retryInterval = Integer.parseInt(props.get(RedisProperty.REDIS_RETRY_INTERVAL));
             reconnectionTimeout = Integer.parseInt(props.get(RedisProperty.REDIS_RECONNECTION_TIMEOUT));
-            failedAttempts = Integer.parseInt(props.get(RedisProperty.REDIS_FAILED_ATTEMPTS));
+            slaveFailsInterval = Integer.parseInt(props.get(RedisProperty.REDIS_SLAVE_FAILS_INTERVAL));
             database = Integer.parseInt(props.get(RedisProperty.REDIS_DATABASE));
             password = props.get(RedisProperty.REDIS_PASSWORD);
             subscriptionsPerConnection = Integer.parseInt(props.get(RedisProperty.REDIS_SUBSCRIPTION_PER_CONN));

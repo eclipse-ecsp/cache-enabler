@@ -99,9 +99,6 @@ public abstract class RedisProperty {
     /** The Constant REDIS_RECONNECTION_TIMEOUT. */
     public static final String REDIS_RECONNECTION_TIMEOUT = "redis.reconnection.timeout";
     
-    /** The Constant REDIS_FAILED_ATTEMPTS. */
-    public static final String REDIS_FAILED_ATTEMPTS = "redis.failed.attempts";
-    
     /** The Constant REDIS_DATABASE. */
     public static final String REDIS_DATABASE = "redis.database";
     
@@ -155,4 +152,8 @@ public abstract class RedisProperty {
     
     /** The Constant REDIS_CHECK_SLOTS_COVERAGE. */
     public static final String REDIS_CHECK_SLOTS_COVERAGE = "redis.check.slots.coverage";
+
+    /** The Constant REDIS_SLAVE_FAILS_INTERVAL. */
+    public static final String REDIS_SLAVE_FAILS_INTERVAL = "redis.slave.fails.interval";
+
 }
