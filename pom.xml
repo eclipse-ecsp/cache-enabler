@@ -43,7 +43,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eclipse.ecsp</groupId>
     <artifactId>cache-enabler</artifactId>
-    <version>1.2-java-25-SNAPSHOT</version>
+    <version>1.2-java-25-1-SNAPSHOT</version>
 	
     <name>Cache Enabler</name>
     <description>Enabler for implementing Caching</description>
@@ -85,11 +85,11 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
-        <transformers.version>1.2-java-25-SNAPSHOT</transformers.version>
+        <transformers.version>1.2-java-25-1-SNAPSHOT</transformers.version>
         <maven.surefire.version>2.18.1</maven.surefire.version>
         <docker.java.version>3.3.6</docker.java.version>
         <testcontainers.version>1.17.6</testcontainers.version>
-        <spring.test.version>7.0.3</spring.test.version>
+        <spring.test.version>7.0.5</spring.test.version>
         <checkstyle.version>10.13.0</checkstyle.version>
         <maven.checkstyle.version>3.3.1</maven.checkstyle.version>
         <checkstyle.config.location>${project.basedir}/checkstyle.xml</checkstyle.config.location>
