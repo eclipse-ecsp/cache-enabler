@@ -43,7 +43,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eclipse.ecsp</groupId>
     <artifactId>cache-enabler</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-java-25-1-SNAPSHOT</version>
 	
     <name>Cache Enabler</name>
     <description>Enabler for implementing Caching</description>
@@ -82,14 +82,14 @@
     </organization>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
-        <transformers.version>1.0.0</transformers.version>
+        <transformers.version>1.2-java-25-1-SNAPSHOT</transformers.version>
         <maven.surefire.version>2.18.1</maven.surefire.version>
         <docker.java.version>3.3.6</docker.java.version>
         <testcontainers.version>1.17.6</testcontainers.version>
-        <spring.test.version>6.1.14</spring.test.version>
+        <spring.test.version>7.0.5</spring.test.version>
         <checkstyle.version>10.13.0</checkstyle.version>
         <maven.checkstyle.version>3.3.1</maven.checkstyle.version>
         <checkstyle.config.location>${project.basedir}/checkstyle.xml</checkstyle.config.location>
@@ -100,8 +100,8 @@
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-        <sonar.java.source>17</sonar.java.source>
-        <sonar.java.target>17</sonar.java.target>
+        <sonar.java.source>25</sonar.java.source>
+        <sonar.java.target>25</sonar.java.target>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco-ut/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
@@ -120,6 +120,49 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>org.sonatype.central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jcl</artifactId>
+                <version>${spring.test.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -189,12 +232,6 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.test.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -358,7 +395,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.14</version>
                 <executions>
                     <!-- Prepares the property pointing to the JaCoCo runtime 
                         agent which is passed as VM argument when Maven the Surefire plugin is executed. -->
