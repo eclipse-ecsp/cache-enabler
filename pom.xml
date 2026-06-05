@@ -85,13 +85,13 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
-        <transformers.version>1.2-java-25-1-SNAPSHOT</transformers.version>
-        <maven.surefire.version>2.18.1</maven.surefire.version>
+        <transformers.version>1.0.SPRING-SNAPSHOT</transformers.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
         <docker.java.version>3.3.6</docker.java.version>
-        <testcontainers.version>1.17.6</testcontainers.version>
+        <testcontainers.version>2.0.3</testcontainers.version>
         <spring.test.version>7.0.5</spring.test.version>
         <checkstyle.version>10.13.0</checkstyle.version>
-        <maven.checkstyle.version>3.3.1</maven.checkstyle.version>
+        <maven.checkstyle.version>3.6.0</maven.checkstyle.version>
         <checkstyle.config.location>${project.basedir}/checkstyle.xml</checkstyle.config.location>
         <sonar.java.checkstyle.reportPaths>${project.build.directory}/checkstyle-result.xml
         </sonar.java.checkstyle.reportPaths>
@@ -110,6 +110,19 @@
         </jacoco.ut.execution.data.file>
         <commons.io.version>2.11.0</commons.io.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>org.sonatype.central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <pluginRepositories>
         <pluginRepository>
