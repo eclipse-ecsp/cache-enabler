@@ -105,7 +105,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco-ut/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
-        <redisson.version>4.1.0</redisson.version>
+        <redisson.version>4.5.0</redisson.version>
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec
         </jacoco.ut.execution.data.file>
         <commons.io.version>2.11.0</commons.io.version>
