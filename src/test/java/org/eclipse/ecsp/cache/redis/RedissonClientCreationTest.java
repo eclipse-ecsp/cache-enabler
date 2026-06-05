@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.redisson.api.RedissonClient;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +53,6 @@ public class RedissonClientCreationTest {
      */
     @Before
     public void setup() {
-
         LOGGER.info("Initializing redisson client...");
         Map<String, String> props = getPropertiesMap();
         RedisConfig redisConfig = new RedisConfig();

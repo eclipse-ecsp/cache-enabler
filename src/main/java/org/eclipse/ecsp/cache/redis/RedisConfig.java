@@ -474,7 +474,7 @@ public class RedisConfig {
         /**
          * Builds a RedissonClient using the provided properties.
          *
-         * @param props the properties to configure the RedissonClient
+         * @param props        the properties to configure the RedissonClient
          * @return the configured RedissonClient
          */
         public RedissonClient build(Map<String, String> props) {
