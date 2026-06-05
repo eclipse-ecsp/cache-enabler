@@ -134,6 +134,7 @@ public class RedissonClientCreationTest {
         props.put("redis.ping.connection.interval", "60000");
         props.put("redis.tcp.no.delay", "true");
         props.put("redis.transport.mode", "NIO");
+        props.put("redis.slave.fails.interval", "180000");
         return props;
     }
 }

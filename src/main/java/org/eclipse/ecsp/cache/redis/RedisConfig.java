@@ -45,9 +45,11 @@ import org.eclipse.ecsp.utils.logger.IgniteLogger;
 import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.FailedConnectionDetector;
 import org.redisson.client.codec.Codec;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
+import org.redisson.config.ConstantDelay;
 import org.redisson.config.ReadMode;
 import org.redisson.config.SubscriptionMode;
 import org.redisson.config.TransportMode;
@@ -59,6 +61,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -145,10 +148,6 @@ public class RedisConfig {
     @Value("${" + RedisProperty.REDIS_RECONNECTION_TIMEOUT + "}")
     private Integer reconnectionTimeout;
     
-    /** The failed attempts. */
-    @Value("${" + RedisProperty.REDIS_FAILED_ATTEMPTS + "}")
-    private Integer failedAttempts;
-    
     /** The database. */
     @Value("${" + RedisProperty.REDIS_DATABASE + "}")
     private Integer database;
@@ -184,10 +183,6 @@ public class RedisConfig {
     /** The netty threads. */
     @Value("${" + RedisProperty.REDIS_NETTY_THREADS + "}")
     private Integer nettyThreads;
-    
-    /** The decode in executor. */
-    @Value("${" + RedisProperty.REDIS_DECODE_IN_EXECUTOR + "}")
-    private boolean decodeInExecutor;
     
     /** The threads. */
     @Value("${" + RedisProperty.REDIS_EXECUTOR_THREADS + "}")
@@ -232,6 +227,9 @@ public class RedisConfig {
     /** The check slots coverage. */
     @Value("${" + RedisProperty.REDIS_CHECK_SLOTS_COVERAGE + ":false}")
     private boolean checkSlotsCoverage;
+
+    @Value("${" + RedisProperty.REDIS_SLAVE_FAILS_INTERVAL + ":180000}")
+    private int slaveFailsInterval;
 
     /** The object mapper. */
     @Autowired
@@ -364,17 +362,17 @@ public class RedisConfig {
                 .setConnectTimeout(connectTimeout)
                 .setTimeout(timeout)
                 .setRetryAttempts(retryAttempts)
-                .setRetryInterval(retryInterval)
+                .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setFailedSlaveReconnectionInterval(reconnectionTimeout)
-                .setFailedSlaveCheckInterval(failedAttempts)
+                .setFailedSlaveNodeDetector(new FailedConnectionDetector(slaveFailsInterval))
                 .setDatabase(database)
                 .setClientName(clientName)
-                .setKeepAlive(keepAlive)
-                .setPingConnectionInterval(pingConnectionInterval)
-                .setTcpNoDelay(tcpNoDelay);
-
+                .setPingConnectionInterval(pingConnectionInterval);
+        config.setTcpKeepAlive(keepAlive);
+        config.setTcpNoDelay(tcpNoDelay);
         if ((password != null) && (password.trim().length() > 0)) {
-            config.useSentinelServers().setPassword(password);
+            config.useSentinelServers();
+            config.setPassword(password);
         }
         return config;
     }
@@ -403,20 +401,21 @@ public class RedisConfig {
                 .setIdleConnectionTimeout(idleConnectionTimeout)
                 .setTimeout(timeout)
                 .setRetryAttempts(retryAttempts)
-                .setRetryInterval(retryInterval)
+                .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setFailedSlaveReconnectionInterval(reconnectionTimeout)
-                .setFailedSlaveCheckInterval(failedAttempts)
+                .setFailedSlaveNodeDetector(new FailedConnectionDetector(slaveFailsInterval))
                 .setClientName(clientName)
-                .setKeepAlive(keepAlive)
                 .setPingConnectionInterval(pingConnectionInterval)
-                .setTcpNoDelay(tcpNoDelay)
                 .setSlaveConnectionMinimumIdleSize(slaveConnectionMinimumIdleSize)
                 .setSlaveConnectionPoolSize(slaveConnectionPoolSize)
                 .setMasterConnectionMinimumIdleSize(masterConnectionMinimumIdleSize)
                 .setMasterConnectionPoolSize(masterConnectionPoolSize)
                 .setCheckSlotsCoverage(checkSlotsCoverage);
+        config.setTcpKeepAlive(keepAlive);
+        config.setTcpNoDelay(tcpNoDelay);
         if ((password != null) && (password.trim().length() > 0)) {
-            config.useClusterServers().setPassword(password);
+            config.useClusterServers();
+            config.setPassword(password);
         }
         return config;
     }
@@ -446,15 +445,16 @@ public class RedisConfig {
                 .setConnectTimeout(connectTimeout)
                 .setTimeout(timeout)
                 .setRetryAttempts(retryAttempts)
-                .setRetryInterval(retryInterval)
+                .setRetryDelay(new ConstantDelay(Duration.ofMillis(retryInterval)))
                 .setDatabase(database)
                 .setClientName(clientName)
-                .setKeepAlive(keepAlive)
-                .setPingConnectionInterval(pingConnectionInterval)
-                .setTcpNoDelay(tcpNoDelay);
+                .setPingConnectionInterval(pingConnectionInterval);
+        config.setTcpKeepAlive(keepAlive);
+        config.setTcpNoDelay(tcpNoDelay);
         config.setNettyThreads(nettyThreads);
         if ((password != null) && (password.trim().length() > 0)) {
-            config.useSingleServer().setPassword(password);
+            config.useSingleServer();
+            config.setPassword(password);
         }
         return config;
     }
@@ -511,7 +511,7 @@ public class RedisConfig {
             retryAttempts = Integer.parseInt(props.get(RedisProperty.REDIS_RETRY_ATTEMPTS));
             retryInterval = Integer.parseInt(props.get(RedisProperty.REDIS_RETRY_INTERVAL));
             reconnectionTimeout = Integer.parseInt(props.get(RedisProperty.REDIS_RECONNECTION_TIMEOUT));
-            failedAttempts = Integer.parseInt(props.get(RedisProperty.REDIS_FAILED_ATTEMPTS));
+            slaveFailsInterval = Integer.parseInt(props.get(RedisProperty.REDIS_SLAVE_FAILS_INTERVAL));
             database = Integer.parseInt(props.get(RedisProperty.REDIS_DATABASE));
             password = props.get(RedisProperty.REDIS_PASSWORD);
             subscriptionsPerConnection = Integer.parseInt(props.get(RedisProperty.REDIS_SUBSCRIPTION_PER_CONN));
@@ -521,7 +521,6 @@ public class RedisConfig {
             clusterMasters = props.get(RedisProperty.REDIS_CLUSTER_MASTERS);
             scanInterval = Integer.parseInt(props.get(RedisProperty.REDIS_SCAN_INTERVAL));
             nettyThreads = Integer.parseInt(props.get(RedisProperty.REDIS_NETTY_THREADS));
-            decodeInExecutor = Boolean.parseBoolean(props.get(RedisProperty.REDIS_DECODE_IN_EXECUTOR));
             threads = Integer.parseInt(props.get(RedisProperty.REDIS_EXECUTOR_THREADS));
             keepAlive = Boolean.parseBoolean(props.get(RedisProperty.REDIS_KEEP_ALIVE));
             pingConnectionInterval = Integer.parseInt(props.get(RedisProperty.REDIS_PING_CONNECTION_INTERVAL));

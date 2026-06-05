@@ -1,0 +1,16 @@
+/target/
+.classpath
+.project
+.settings/
+logs/
+.factorypath
+.idea/**
+.vscode/**
+*.iml
+*.ipr
+*.iws
+*.header
+*.log
+*.log.*
+*redis*.log
+*redis*

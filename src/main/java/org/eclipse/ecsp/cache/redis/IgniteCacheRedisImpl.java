@@ -579,7 +579,7 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
         do {
             List<Object> matches = redissonClient.getScript(stringCodec).eval(RScript.Mode.READ_ONLY,
                     scanRegexScript,
-                    RScript.ReturnType.MULTI, Collections.emptyList(), cursor, scanLimit, keyRegex);
+                    RScript.ReturnType.LIST, Collections.emptyList(), cursor, scanLimit, keyRegex);
             if (!matches.isEmpty()) {
                 cursor = (long) matches.get(0);
                 LOGGER.debug("Received cursor value {}", cursor);
