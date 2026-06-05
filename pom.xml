@@ -90,7 +90,7 @@
         <docker.java.version>3.3.6</docker.java.version>
         <testcontainers.version>2.0.3</testcontainers.version>
         <spring.test.version>7.0.5</spring.test.version>
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <checkstyle.version>13.5.0</checkstyle.version>
         <maven.checkstyle.version>3.6.0</maven.checkstyle.version>
         <checkstyle.config.location>${project.basedir}/checkstyle.xml</checkstyle.config.location>
         <sonar.java.checkstyle.reportPaths>${project.build.directory}/checkstyle-result.xml
