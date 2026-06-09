@@ -43,7 +43,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eclipse.ecsp</groupId>
     <artifactId>cache-enabler</artifactId>
-    <version>1.2-java-25-1-SNAPSHOT</version>
+    <version>2.0.0</version>
 	
     <name>Cache Enabler</name>
     <description>Enabler for implementing Caching</description>
@@ -85,7 +85,7 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
-        <ecsp.utils.version>1.1.1</ecsp.utils.version>
+        <ecsp.utils.version>1.2.1</ecsp.utils.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <docker.java.version>3.3.6</docker.java.version>
         <testcontainers.version>2.0.3</testcontainers.version>
