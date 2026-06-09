@@ -109,7 +109,7 @@
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec
         </jacoco.ut.execution.data.file>
         <commons.io.version>2.11.0</commons.io.version>
-        <springframework.boot.version>3.5.4</springframework.boot.version>
+        <springframework.boot.version>4.0.5</springframework.boot.version>
         <jackson.dataformat.version>2.17.1</jackson.dataformat.version>
     </properties>
 
