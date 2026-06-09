@@ -57,7 +57,7 @@ maven/mavencentral/io.projectreactor/reactor-core/3.6.2, Apache-2.0, approved, #
 maven/mavencentral/io.prometheus/simpleclient/0.6.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.reactivex.rxjava3/rxjava/3.1.8, Apache-2.0, approved, clearlydefined
 maven/mavencentral/jakarta.activation/jakarta.activation-api/1.2.1, EPL-2.0 OR BSD-3-Clause OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jaf
-maven/mavencentral/jakarta.annotation/jakarta.annotation-api/2.1.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.ca
+maven/mavencentral/jakarta.annotation/jakarta.annotation-api/3.0.0, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.ca
 maven/mavencentral/jakarta.ws.rs/jakarta.ws.rs-api/2.1.6, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.rest
 maven/mavencentral/jakarta.xml.bind/jakarta.xml.bind-api/2.3.2, BSD-3-Clause, approved, ee4j.jaxb
 maven/mavencentral/javax.cache/cache-api/1.1.1, Apache-2.0, approved, #19671
@@ -70,13 +70,13 @@ maven/mavencentral/org.apache.commons/commons-compress/1.28.0, Apache-2.0 AND (A
 maven/mavencentral/org.apache.commons/commons-lang3/3.9, Apache-2.0, approved, CQ21762
 maven/mavencentral/org.apache.httpcomponents/httpclient/4.5.12, Apache-2.0, approved, #15248
 maven/mavencentral/org.apache.httpcomponents/httpcore/4.4.13, Apache-2.0, approved, CQ23528
-maven/mavencentral/org.aspectj/aspectjweaver/1.9.22.1, EPL-1.0, approved, tools.aspectj
+maven/mavencentral/org.aspectj/aspectjweaver/1.9.25.1, EPL-1.0, approved, tools.aspectj
 maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.76, MIT, approved, #9825
 maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.76, MIT AND CC0-1.0, approved, #9827
 maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.76, MIT, approved, #9828
 maven/mavencentral/org.checkerframework/checker-qual/3.42.0, MIT, approved, #20003
-maven/mavencentral/org.eclipse.ecsp/entities/1.1.1, Apache-2.0, approved, automotive.ecsp
-maven/mavencentral/org.eclipse.ecsp/utils/1.1.1, Apache-2.0, approved, automotive.ecsp
+maven/mavencentral/org.eclipse.ecsp/entities/1.2.0, Apache-2.0, approved, automotive.ecsp
+maven/mavencentral/org.eclipse.ecsp/utils/1.2.1, Apache-2.0, approved, automotive.ecsp
 maven/mavencentral/org.glassfish.hk2.external/aopalliance-repackaged/2.6.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.glassfish
 maven/mavencentral/org.glassfish.hk2.external/jakarta.inject/2.6.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.glassfish
 maven/mavencentral/org.glassfish.hk2/hk2-api/2.6.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.glassfish
@@ -105,8 +105,8 @@ maven/mavencentral/org.reflections/reflections/0.9.11, MIT, approved, CQ16665
 maven/mavencentral/org.rnorth.duct-tape/duct-tape/1.0.8, MIT, approved, clearlydefined
 maven/mavencentral/org.slf4j/slf4j-api/2.0.13, MIT, approved, #5915
 maven/mavencentral/org.springframework.boot/spring-boot-autoconfigure/4.0.5, Apache-2.0, approved, #24987
-maven/mavencentral/org.springframework.boot/spring-boot-starter-aop/3.3.3, Apache-2.0, approved, #16896
-maven/mavencentral/org.springframework.boot/spring-boot-starter/3.3.3, Apache-2.0, approved, #16895
+maven/mavencentral/org.springframework.boot/spring-boot-starter-aspectj/4.0.5, Apache-2.0, approved, #26060
+maven/mavencentral/org.springframework.boot/spring-boot-starter/4.0.5, Apache-2.0, approved, #25636
 maven/mavencentral/org.springframework.boot/spring-boot/4.0.5, Apache-2.0, approved, #24993
 maven/mavencentral/org.springframework/spring-aop/7.0.5, Apache-2.0, approved, #24985
 maven/mavencentral/org.springframework/spring-beans/7.0.5, Apache-2.0, approved, #24991
