@@ -45,7 +45,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.redisson.api.RedissonClient;
-import org.redisson.client.WriteRedisConnectionException;
+import org.redisson.client.RedisException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +109,7 @@ public class IgniteCacheRedisImpProxylIntegrationTest {
         PutStringRequest putStringRequest = new PutStringRequest().withKey("hello").withValue("world");
         try {
             igniteCache.putString(putStringRequest);
-        } catch (WriteRedisConnectionException e) {
+        } catch (RedisException e) {
             exceptionOccurred = true;
         }
         Assert.assertTrue(exceptionOccurred);
