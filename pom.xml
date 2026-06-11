@@ -43,7 +43,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eclipse.ecsp</groupId>
     <artifactId>cache-enabler</artifactId>
-    <version>2.1.0</version>
+    <version>2.2-SNAPSHOT</version>
 	
     <name>Cache Enabler</name>
     <description>Enabler for implementing Caching</description>
