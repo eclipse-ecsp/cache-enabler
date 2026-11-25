@@ -119,18 +119,95 @@ Add the following dependency in the target project
 
 ### Redis connection configuration
 
-All the redis related configuration needs to be specified on the environment, which can be referred [here](./src/test/resources/ignite-cache.properties)
+Add the following example to the service's Spring configuration, such as
+`application.properties`, and adjust the connection details and tuning for
+your environment. These are example values, not necessarily library defaults.
+Provide `redis.password` securely when authentication is enabled.
+
+```properties
+redis.address=127.0.0.1:6379
+redis.sentinels=
+redis.master.name=
+redis.dns.monitoring.interval=5000
+redis.read.mode=MASTER
+redis.subscription.mode=MASTER
+redis.subscription.conn.min.idle.size=1
+redis.subscription.conn.pool.size=50
+redis.slave.conn.min.idle.size=32
+redis.slave.pool.size=64
+redis.master.conn.min.idle.size=32
+redis.master.conn.pool.size=128
+redis.idle.conn.timeout=600000
+redis.conn.timeout=20000
+redis.timeout=10000
+redis.retry.attempts=3
+redis.retry.interval=1500
+redis.reconnection.timeout=20000
+redis.database=0
+redis.password=
+redis.subscriptions.per.conn=5
+redis.client.name=yellow
+redis.conn.min.idle.size=32
+redis.conn.pool.size=128
+redis.cluster.masters=
+redis.scan.interval=10000
+redis.netty.threads=32
+redis.executor.threads=32
+redis.keep.alive=true
+redis.ping.connection.interval=60000
+redis.tcp.no.delay=true
+redis.transport.mode=NIO
+redis.check.slots.coverage=false
+redis.slave.fails.interval=180000
+
+# Required Spring placeholder; set an appropriate pattern when using a custom codec.
+retry.record.id.pattern=
+
+# Optional IgniteCache scan and asynchronous batch settings.
+redis.scan.limit=10000
+redis.regex.scan.filename=scanregex.txt
+redis.pipeline.size=2
+```
+
+`redis.dns.monitoring.interval` is included for compatibility with existing
+configurations, but the current library does not read or apply it. Most Redis
+properties above are injected without defaults, even when they are not used by
+the selected connection mode; keep them defined for Spring integration.
+
+The three IgniteCache settings are optional:
+
+* `redis.scan.limit` defaults to `100` and controls the count passed to each
+  regex scan; values below `10` are raised to `10`.
+* `redis.regex.scan.filename` defaults to `scanregex.txt`, which is bundled
+  with the library. The script is loaded from the classpath during cache
+  initialization; a missing or unreadable configured resource prevents startup.
+* `redis.pipeline.size` defaults to `1000` and sets the asynchronous batch
+  execution threshold. Omitting it changes batching to that default, not the
+  example value of `2`.
+
+The test configuration is also available [here](./src/test/resources/ignite-cache.properties).
 
 Some configuration which decide the kind of connection to be made: 
 
-1.  For running the library as a client of Redis with sentinels, the services need to set the below property:
-   `redis.sentinels=<redis-sentinel-list>`
+1.  For running the library as a client of Redis with sentinels, set
+   `redis.sentinels=<comma-separated-host:port-list>` and
+   `redis.master.name=<sentinel-master-name>`.
 
 2. For running the library as a client of Redis clustered nodes, the services need to set the below property:
-   `redis.cluster.masters=<xxxxx>`
+   `redis.cluster.masters=<comma-separated-host:port-list>`
 
-3. If the above two configurations are not specified, the default configuration will be applied to run the application as a client for a single Redis server instance, the host of which is specified by:
+3. If both sentinel and cluster lists are empty, the default configuration will be applied to run the application as a client for a single Redis server instance, the host of which is specified by:
    `redis.address=<xxxxxxx>`
+
+If both lists are populated, sentinel mode takes precedence.
+
+Set `redis.ssl.enabled=true` to use TLS (`rediss://`) in any connection mode.
+It defaults to `false` (`redis://`) for existing deployments. For an
+ElastiCache Valkey cluster with TLS and password authentication, set
+`redis.cluster.masters` to its cluster endpoint and port (without a URI
+scheme), enable TLS, and supply the existing `redis.password` property securely.
+The map-based `RedissonClientBuilder` accepts the same `redis.ssl.enabled`
+property.
 
 ### Health Check
 

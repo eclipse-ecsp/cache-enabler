@@ -104,6 +104,9 @@ public abstract class RedisProperty {
     
     /** The Constant REDIS_PASSWORD. */
     public static final String REDIS_PASSWORD = "redis.password";
+
+    /** The Constant REDIS_SSL_ENABLED. */
+    public static final String REDIS_SSL_ENABLED = "redis.ssl.enabled";
     
     /** The Constant REDIS_SUBSCRIPTION_PER_CONN. */
     public static final String REDIS_SUBSCRIPTION_PER_CONN = "redis.subscriptions.per.conn";

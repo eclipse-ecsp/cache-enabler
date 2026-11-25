@@ -48,9 +48,12 @@ import org.redisson.api.RedissonClient;
 import org.redisson.client.FailedConnectionDetector;
 import org.redisson.client.codec.Codec;
 import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
 import org.redisson.config.ConstantDelay;
 import org.redisson.config.ReadMode;
+import org.redisson.config.SentinelServersConfig;
+import org.redisson.config.SingleServerConfig;
 import org.redisson.config.SubscriptionMode;
 import org.redisson.config.TransportMode;
 import org.redisson.connection.balancer.RoundRobinLoadBalancer;
@@ -155,6 +158,9 @@ public class RedisConfig {
     /** The password. */
     @Value("${" + RedisProperty.REDIS_PASSWORD + "}")
     private String password;
+
+    @Value("${" + RedisProperty.REDIS_SSL_ENABLED + ":false}")
+    private boolean sslEnabled;
     
     /** The subscriptions per connection. */
     @Value("${" + RedisProperty.REDIS_SUBSCRIPTION_PER_CONN + "}")
@@ -244,6 +250,13 @@ public class RedisConfig {
     
     /** The Constant REDIS_ADDRESS_PREFIX. */
     public static final String REDIS_ADDRESS_PREFIX = "redis://";
+
+    /** The Constant REDIS_ADDRESS_PREFIX_TLS. */
+    public static final String REDIS_ADDRESS_PREFIX_TLS = "rediss://";
+
+    private String addressPrefix() {
+        return sslEnabled ? REDIS_ADDRESS_PREFIX_TLS : REDIS_ADDRESS_PREFIX;
+    }
 
     /**
      * Redisson client.
@@ -344,11 +357,12 @@ public class RedisConfig {
         config.setThreads(threads)
                 .setNettyThreads(nettyThreads)
                 .setCodec(codec)
-                .setTransportMode(transportMode)
-                .useSentinelServers()
+                .setTransportMode(transportMode);
+        SentinelServersConfig sentinelServersConfig = config.useSentinelServers();
+        sentinelServersConfig
                 .setMasterName(masterName)
                 .addSentinelAddress(Arrays.stream(sentinels.split(","))
-                        .map(s ->  REDIS_ADDRESS_PREFIX + s).toArray(String[]::new))
+                        .map(s ->  addressPrefix() + s).toArray(String[]::new))
                 .setReadMode(ReadMode.valueOf(readMode))
                 .setSubscriptionMode(SubscriptionMode.valueOf(subscriptionMode))
                 .setSubscriptionConnectionMinimumIdleSize(subscriptionConnectionMinimumIdleSize)
@@ -371,8 +385,7 @@ public class RedisConfig {
         config.setTcpKeepAlive(keepAlive);
         config.setTcpNoDelay(tcpNoDelay);
         if ((password != null) && (password.trim().length() > 0)) {
-            config.useSentinelServers();
-            config.setPassword(password);
+            sentinelServersConfig.setPassword(password);
         }
         return config;
     }
@@ -388,10 +401,11 @@ public class RedisConfig {
         config.setThreads(threads)
                 .setNettyThreads(nettyThreads)
                 .setCodec(codec)
-                .setTransportMode(transportMode)
-                .useClusterServers()
+                .setTransportMode(transportMode);
+        ClusterServersConfig clusterServersConfig = config.useClusterServers();
+        clusterServersConfig
                 .addNodeAddress(Arrays.stream(clusterMasters.split(","))
-                        .map(s ->  REDIS_ADDRESS_PREFIX + s).toArray(String[]::new))
+                        .map(s ->  addressPrefix() + s).toArray(String[]::new))
                 .setScanInterval(scanInterval)
                 .setLoadBalancer(new RoundRobinLoadBalancer())
                 .setSubscriptionConnectionMinimumIdleSize(subscriptionConnectionMinimumIdleSize)
@@ -414,8 +428,7 @@ public class RedisConfig {
         config.setTcpKeepAlive(keepAlive);
         config.setTcpNoDelay(tcpNoDelay);
         if ((password != null) && (password.trim().length() > 0)) {
-            config.useClusterServers();
-            config.setPassword(password);
+            clusterServersConfig.setPassword(password);
         }
         return config;
     }
@@ -432,9 +445,10 @@ public class RedisConfig {
         config.setThreads(threads)
                 .setNettyThreads(nettyThreads)
                 .setCodec(codec)
-                .setTransportMode(transportMode)
-                .useSingleServer()
-                .setAddress(REDIS_ADDRESS_PREFIX + addressToUse)
+                .setTransportMode(transportMode);
+        SingleServerConfig singleServerConfig = config.useSingleServer();
+        singleServerConfig
+                .setAddress(addressPrefix() + addressToUse)
                 .setSubscriptionConnectionMinimumIdleSize(subscriptionConnectionMinimumIdleSize)
                 .setSubscriptionConnectionPoolSize(subscriptionConnectionPoolSize)
                 .setSubscriptionsPerConnection(subscriptionsPerConnection)
@@ -453,8 +467,7 @@ public class RedisConfig {
         config.setTcpNoDelay(tcpNoDelay);
         config.setNettyThreads(nettyThreads);
         if ((password != null) && (password.trim().length() > 0)) {
-            config.useSingleServer();
-            config.setPassword(password);
+            singleServerConfig.setPassword(password);
         }
         return config;
     }
@@ -526,6 +539,7 @@ public class RedisConfig {
             pingConnectionInterval = Integer.parseInt(props.get(RedisProperty.REDIS_PING_CONNECTION_INTERVAL));
             tcpNoDelay = Boolean.parseBoolean(props.get(RedisProperty.REDIS_TCP_NO_DELAY));
             checkSlotsCoverage = Boolean.parseBoolean(props.get(RedisProperty.REDIS_CHECK_SLOTS_COVERAGE));
+            sslEnabled = Boolean.parseBoolean(props.getOrDefault(RedisProperty.REDIS_SSL_ENABLED, "false"));
             String tsMode = props.get(RedisProperty.REDIS_TRANSPORT_MODE);
             if (StringUtils.isEmpty(tsMode)) {
                 throw new IllegalArgumentException("redis.transport.mode cannot be null or empty");
