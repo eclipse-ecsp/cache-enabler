@@ -542,7 +542,7 @@ public class RedisConfig {
             sslEnabled = Boolean.parseBoolean(props.getOrDefault(RedisProperty.REDIS_SSL_ENABLED, "false"));
             String tsMode = props.get(RedisProperty.REDIS_TRANSPORT_MODE);
             if (StringUtils.isEmpty(tsMode)) {
-                throw new IllegalArgumentException("redis.transport.mode cannot be null or empty");
+                throw new IllegalArgumentException("cache.transport.mode cannot be null or empty");
             } else {
                 transportMode = TransportMode.valueOf(tsMode);
             }
