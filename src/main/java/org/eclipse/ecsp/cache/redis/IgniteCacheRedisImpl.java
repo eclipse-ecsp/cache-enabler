@@ -140,11 +140,11 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     private static final IgniteLogger LOGGER = IgniteLoggerFactory.getLogger(IgniteCacheRedisImpl.class);
 
     /** The scan limit. */
-    @Value("${redis.scan.limit:100}")
+    @Value("${cache.scan.limit:100}")
     private int scanLimit;
 
     /** The regex scan file name. */
-    @Value("${redis.regex.scan.filename:scanregex.txt}")
+    @Value("${cache.regex.scan.filename:scanregex.txt}")
     private String regexScanFileName;
 
     /** The string codec. */
@@ -176,7 +176,7 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     /**
      * Pipelining batch size. See redis pipelining for more details.
      */
-    @Value("${redis.pipeline.size:1000}")
+    @Value("${cache.pipeline.size:1000}")
     private int batchSize = 1000;
     // One thread could be committing the batch when another thread could be
     // adding to the batch. To avoid this, using a volatile and assigning a new
@@ -213,7 +213,7 @@ public class IgniteCacheRedisImpl implements IgniteCache, HealthMonitor {
     private boolean needsRestartOnFailure;
 
     /** The redis key namespace. */
-    @Value("#{'${redis.key.namespace:}'.trim()}")
+    @Value("#{'${cache.key.namespace:}'.trim()}")
     private String redisKeyNamespace;
 
     /** The healthy. */
